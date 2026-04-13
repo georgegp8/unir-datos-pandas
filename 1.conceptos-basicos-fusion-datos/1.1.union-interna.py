@@ -7,6 +7,14 @@ import pandas as pd
 # Carga de los dataframes
 taxi_owners = pd.read_csv('../taxi_owners.csv')
 taxi_veh = pd.read_csv('../taxi_vehicles.csv')
+wards = pd.read_csv('../Chicago_wards.csv')
+census = pd.read_csv('../Chicago_census.csv')
+
+# Copias alteradas para comparar fusiones internas
+wards_altered = wards.copy()
+census_altered = census.copy()
+wards_altered.loc[0, 'ward'] = -1
+census_altered.loc[0, 'ward'] = -1
 
 # ------------------------------------------------
 # Sección 1: ¿Qué columna elegiremos para fusionar?
@@ -51,3 +59,28 @@ print(taxi_own_veh.columns)
 # Instrucción 3: Selecciona la columna `fuel_type` e imprime `.value_counts()` 
 # para encontrar los tipos de combustible más utilizados.
 print(taxi_own_veh['fuel_type'].value_counts())
+
+# ------------------------------------------------
+# Sección 3: Uniones internas y numero de filas devueltas
+# ------------------------------------------------
+# Todas las fusiones que has estudiado hasta ahora se llaman uniones internas.
+# Es necesario comprender que las uniones internas solo devuelven las filas con
+# valores coincidentes en ambas tablas. Para este ejercicio, las tablas `wards`
+# y `census` empiezan con 50 filas.
+
+# Instrucción 1: Fusiona `wards` y `census` en la columna `ward` y guarda
+# el resultado en `wards_census`.
+wards_census = wards.merge(census, on='ward')
+print('wards_census table shape:', wards_census.shape)
+
+# Instrucción 2: Fusiona `wards_altered` y `census` en la columna `ward`
+# y observa la diferencia en las filas devueltas.
+print(wards_altered[['ward']].head())
+wards_altered_census = wards_altered.merge(census, on='ward')
+print('wards_altered_census table shape:', wards_altered_census.shape)
+
+# Instrucción 3: Fusiona `wards` y `census_altered` en la columna `ward`
+# y observa la diferencia en las filas devueltas.
+print(census_altered[['ward']].head())
+wards_census_altered = wards.merge(census_altered, on='ward')
+print('wards_census_altered table shape:', wards_census_altered.shape)
