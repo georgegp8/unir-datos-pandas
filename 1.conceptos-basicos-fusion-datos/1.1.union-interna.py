@@ -1,55 +1,53 @@
-# =================================================================
-# Conceptos Básicos de Fusión de Datos: Unión Interna
-# Ejercicios: Fusionando DataFrames con Pandas
-# =================================================================
+# ================================================
+# Conceptos Basicos de Fusion de Datos - Parte 1
+# ================================================
 
-# ------------------------------------------------
-# Sección 1: Fusión de DataFrames de Taxis
-# ------------------------------------------------
-# Chicago proporciona una lista de propietarios de taxis y vehículos con licencia 
-# para operar en la ciudad, por seguridad pública. Tu objetivo es unir dos tablas. 
-# Una tabla se llama `taxi_owners` y contiene información sobre los propietarios 
-# de las empresas de taxis, mientras que la otra se llama `taxi_veh` e incluye 
-# información sobre cada vehículo de taxi. Se han cargado las tablas `taxi_owners` y
-# `taxi_veh` para que las explores.
-
-# Instrucciones:
-# - Fusiona los DataFrames `taxi_owners` y `taxi_veh` en la columna `vid`.
-# - Imprime las primeras 5 filas del DataFrame resultante.
-# - Imprime el número de filas y columnas del DataFrame resultante.
-
-# Importar pandas
 import pandas as pd
 
 # Carga de los dataframes
 taxi_owners = pd.read_csv('../taxi_owners.csv')
 taxi_veh = pd.read_csv('../taxi_vehicles.csv')
 
-# Inspección de los dataframes
-print("Contenido de taxi_owners:")
-print(taxi_owners.head())
-print("\nContenido de taxi_veh:")
-print(taxi_veh.head())
+# ------------------------------------------------
+# Sección 1: ¿Qué columna elegiremos para fusionar?
+# ------------------------------------------------
+# Chicago proporciona una lista de propietarios de taxis y vehículos con licencia
+# para operar en la ciudad, por seguridad pública. Tu objetivo es unir dos tablas.
+# Una tabla se llama `taxi_owners` y contiene información sobre los propietarios de
+# las empresas de taxis, mientras que la otra se llama `taxi_veh` e incluye
+# información sobre cada vehículo de taxi.
 
-# Unión de los dataframes en la columna 'vid'
+# Instrucción 1: Elige la columna correcta para fusionar ambas tablas.
+# Respuestas posibles:
+# - on='rid'
+# - on='vid'
+# - on='year'
+# - on='zip'
+# Respuesta correcta: on='vid'
 taxi_own_veh = taxi_owners.merge(taxi_veh, on='vid')
 
-# Imprimir las 5 primeras filas de la unión
-print("\nDataFrame fusionado (primeras 5 filas):")
-print(taxi_own_veh.head())
-
-# Imprimir el número de filas y columnas
-print("\nDimensiones del DataFrame fusionado:")
-print(taxi_own_veh.shape)
+# Código de verificación de la respuesta
+print(taxi_own_veh.columns)
 
 # ------------------------------------------------
-# Pregunta del Ejercicio
+# Sección 2: Tu Primera Unión Interna
 # ------------------------------------------------
-#
-# ¿Qué columna elegiremos para fusionar?
-#
-# Respuestas posibles:
-#   - on='rid'
-#   - on='vid'  <- Correcta
-#   - on='year'
-#   - on='zip'
+# Te han encargado que averigües cuáles son los tipos de combustible más utilizados 
+# en los taxis de Chicago. Para completar el análisis, tienes que fusionar las tablas 
+# `taxi_owners` y `taxi_veh`.
+
+# Instrucción 1: Fusiona `taxi_owners` con `taxi_veh` en la columna `vid`.
+taxi_own_veh = taxi_owners.merge(taxi_veh, on='vid')
+
+# Código de verificación para la instrucción 1
+print(taxi_own_veh.columns)
+
+# Instrucción 2: Establece los sufijos `_own` y `_veh` para las columnas solapadas.
+taxi_own_veh = taxi_owners.merge(taxi_veh, on='vid', suffixes=('_own', '_veh'))
+
+# Código de verificación para las instrucciones 1 y 2
+print(taxi_own_veh.columns)
+
+# Instrucción 3: Selecciona la columna `fuel_type` e imprime `.value_counts()` 
+# para encontrar los tipos de combustible más utilizados.
+print(taxi_own_veh['fuel_type'].value_counts())
