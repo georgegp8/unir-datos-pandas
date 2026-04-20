@@ -56,3 +56,30 @@ licenses_zip_ward = licenses.merge(zip_demo, on='zip') \
 
 # Instruccion 2: Agrupa por alderman y calcula la mediana de income.
 print(licenses_zip_ward.groupby('alderman').agg({'income': 'median'}))
+
+# ------------------------------------------------
+# Seccion 3: Fusion de uno a muchos con varias tablas
+# ------------------------------------------------
+# En esta seccion, uniras las tablas land_use, census y licenses para analizar
+# como se relacionan poblacion, lotes vacantes y numero de cuentas.
+
+# Carga de los dataframes para la seccion 3
+land_use = pd.read_csv('../land_use.csv')
+census = pd.read_csv('../Chicago_census.csv')
+licenses = pd.read_csv('../licenses.csv')
+
+# Instruccion 1: Fusiona land_use con census en ward. Luego fusiona con licenses
+# en ward usando sufijos _cen para la tabla izquierda y _lic para la derecha.
+land_cen_lic = land_use.merge(census, on='ward') \
+					   .merge(licenses, on='ward', suffixes=('_cen', '_lic'))
+
+# Instruccion 2: Agrupa land_cen_lic por ward, pop_2010 y vacant. Luego cuenta
+# el numero de accounts. Guarda el resultado en pop_vac_lic.
+pop_vac_lic = land_cen_lic.groupby(['ward', 'pop_2010', 'vacant'], as_index=False) \
+						 .agg({'account': 'count'})
+
+# Instruccion 3: Ordena pop_vac_lic por vacant (desc), account (asc) y pop_2010
+# (asc). Guarda en sorted_pop_vac_lic e imprime las primeras filas.
+sorted_pop_vac_lic = pop_vac_lic.sort_values(['vacant', 'account', 'pop_2010'],
+											 ascending=[False, True, True])
+print(sorted_pop_vac_lic.head())
