@@ -34,3 +34,25 @@ filter_criteria = ((ridership_cal_stations['month'] == 7)
 				   & (ridership_cal_stations['station_name'] == 'Wilson'))
 
 print(ridership_cal_stations.loc[filter_criteria, 'rides'].sum())
+
+# ------------------------------------------------
+# Seccion 2: Fusion de tres tablas
+# ------------------------------------------------
+# Para afianzar el concepto de fusion de tres DataFrame, fusionaras las tablas
+# licenses y wards con la tabla zip_demo para analizar la renta media por codigo
+# postal.
+#
+# Los DataFrames licenses, wards y zip_demo se han cargado para ti.
+
+# Carga de los dataframes para la seccion 2
+licenses = pd.read_csv('../licenses.csv')
+wards = pd.read_csv('../Chicago_wards.csv')
+zip_demo = pd.read_csv('../zip_demo.csv')
+
+# Instruccion 1: Partiendo de licenses, fusiona con zip_demo en zip y luego con
+# wards en ward. Guarda el resultado en licenses_zip_ward.
+licenses_zip_ward = licenses.merge(zip_demo, on='zip') \
+							.merge(wards, on='ward')
+
+# Instruccion 2: Agrupa por alderman y calcula la mediana de income.
+print(licenses_zip_ward.groupby('alderman').agg({'income': 'median'}))
